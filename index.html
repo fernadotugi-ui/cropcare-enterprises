@@ -17,7 +17,7 @@
     <div class="max-w-md mx-auto">
         <header class="bg-green-900 text-white p-6 rounded-b-[2.5rem] shadow-xl mb-4 flex items-center gap-4">
             <div class="bg-white p-1 rounded-full w-16 h-16 flex items-center justify-center overflow-hidden">
-                <img src="https://i.ibb.co/VpXpX0C/crop-care-logo-clean.png" alt="CropCare Logo" class="w-full h-full object-contain">
+                <span class="text-green-900 font-black text-[10px] text-center leading-none italic">CROP<br>CARE</span>
             </div>
             <div>
                 <h1 class="text-xl font-black tracking-tight uppercase leading-none">CropCare<br>Enterprise</h1>
@@ -27,7 +27,7 @@
 
         <div class="flex px-6 mb-6 gap-6 text-gray-400 font-bold text-sm">
             <button onclick="openTab('catalog')" id="btn-catalog" class="tab-btn pb-2 active tracking-tighter">CATALOG</button>
-            <button onclick="openTab('contact')" id="btn-contact" class="tab-btn pb-2 tracking-tighter">CONTACT DAD</button>
+            <button onclick="openTab('contact')" id="btn-contact" class="tab-btn pb-2 tracking-tighter uppercase">Contact Info</button>
         </div>
 
         <div id="catalog" class="tab-content active px-4 space-y-3">
@@ -37,26 +37,23 @@
 
         <div id="contact" class="tab-content px-4 space-y-6">
             <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                <h2 class="font-black text-green-900 mb-6 uppercase text-center">Business Contact</h2>
-                
+                <h2 class="font-black text-green-900 mb-6 uppercase text-center text-sm tracking-widest">Business Information</h2>
                 <div class="space-y-4">
                     <a href="tel:+254720584127" class="flex items-center gap-4 p-5 bg-green-50 rounded-2xl border border-green-100 active:scale-95 transition-all">
                         <div class="bg-green-600 p-3 rounded-xl text-white">📞</div>
                         <div>
-                            <p class="text-[10px] font-bold text-green-800 uppercase">Call Now</p>
+                            <p class="text-[10px] font-bold text-green-800 uppercase">Office Line</p>
                             <p class="font-bold text-slate-900">+254 720 584 127</p>
                         </div>
                     </a>
-
                     <a href="https://wa.me/254720584127" class="flex items-center gap-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100 active:scale-95 transition-all">
                         <div class="bg-emerald-500 p-3 rounded-xl text-white">💬</div>
                         <div>
-                            <p class="text-[10px] font-bold text-emerald-800 uppercase">WhatsApp</p>
-                            <p class="font-bold text-slate-900">Send Message</p>
+                            <p class="text-[10px] font-bold text-emerald-800 uppercase">WhatsApp Business</p>
+                            <p class="font-bold text-slate-900">Start a Chat</p>
                         </div>
                     </a>
                 </div>
-                <p class="text-center text-gray-400 text-[10px] mt-8 uppercase font-bold tracking-widest">Nairobi, Kenya</p>
             </div>
         </div>
     </div>
@@ -75,11 +72,19 @@
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl">
             <h2 class="text-center font-black text-2xl text-slate-800 mb-6 uppercase">Sale Summary</h2>
             <div id="receiptItems" class="space-y-2 mb-6 border-y py-4 max-h-40 overflow-y-auto"></div>
-            <div class="flex justify-between font-black text-xl mb-8">
+            <div class="flex justify-between font-black text-xl mb-6">
                 <span>TOTAL</span>
                 <span id="modalTotal">KES 0</span>
             </div>
-            <button onclick="closeReceipt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black">CLEAR & FINISH</button>
+            
+            <div class="space-y-3">
+                <button onclick="shareToWhatsApp()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2">
+                    <span>💬</span> SEND TO CUSTOMER
+                </button>
+                <button onclick="closeReceipt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-sm">
+                    NEW SALE
+                </button>
+            </div>
         </div>
     </div>
 
@@ -134,6 +139,13 @@
             itemsList.innerHTML = cart.map(i => `<div class="flex justify-between text-sm"><span>${i.name}</span><b>KES ${i.price.toLocaleString()}</b></div>`).join('');
             document.getElementById('modalTotal').innerText = `KES ${total.toLocaleString()}`;
             document.getElementById('receiptModal').style.display = 'flex';
+        }
+
+        function shareToWhatsApp() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const itemsText = cart.map(i => `${i.name}: KES ${i.price.toLocaleString()}`).join('%0A');
+            const message = `*CROPCARE ENTERPRISE RECEIPT*%0A%0A${itemsText}%0A%0A*TOTAL: KES ${total.toLocaleString()}*%0A%0AThank you for your business!`;
+            window.open(`https://wa.me/?text=${message}`, '_blank');
         }
 
         function closeReceipt() {
