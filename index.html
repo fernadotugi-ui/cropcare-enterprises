@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropCare Enterprise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+        .price-chip { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="pb-32">
+    <div class="max-w-md mx-auto">
+        <header class="bg-green-900 text-white p-6 rounded-b-[2.5rem] shadow-xl mb-4">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight italic">CROPCARE</h1>
+                    <p class="text-green-300 text-[10px] font-bold uppercase tracking-widest">Enterprise Inventory</p>
+                </div>
+                <div class="bg-green-800 px-3 py-1 rounded-full text-xs font-bold border border-green-700">KES</div>
+            </div>
+            
+            <div class="bg-green-950/50 p-1 rounded-2xl flex items-center">
+                <button id="retailBtn" onclick="setPricing('retail')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all bg-white text-green-900 shadow-sm">RETAIL</button>
+                <button id="wholesaleBtn" onclick="setPricing('wholesale')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all text-green-400">WHOLESALE</button>
+            </div>
+        </header>
+
+        <div id="catalog" class="px-4 space-y-3">
+            </div>
+    </div>
+
+    <div class="fixed bottom-6 left-4 right-4 bg-white border border-gray-100 p-5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] flex justify-between items-center">
+        <div>
+            <p id="totalItems" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">0 Items Selected</p>
+            <p id="totalPrice" class="text-2xl font-black text-slate-900">KES 0</p>
+        </div>
+        <button onclick="showReceipt()" class="bg-green-700 text-white px-8 py-4 rounded-[1.5rem] font-black text-sm active:scale-95 transition-all shadow-lg shadow-green-200">
+            CHECKOUT
+        </button>
+    </div>
+
+    <div id="receiptModal" class="modal">
+        <div class="bg-white w-full rounded-[2.5rem] p-8 shadow-2xl">
+            <div class="w-12 h-1 bg-gray-200 mx-auto mb-6 rounded-full"></div>
+            <h2 class="text-center font-black text-2xl text-slate-800 mb-6 uppercase tracking-tight">Current Order</h2>
+            <div id="receiptItems" class="space-y-3 mb-8 max-h-60 overflow-y-auto"></div>
+            <div class="flex justify-between font-black text-2xl border-t pt-4 text-green-800">
+                <span>TOTAL</span>
+                <span id="modalTotal">KES 0</span>
+            </div>
+            <button onclick="closeReceipt()" class="w-full mt-8 bg-slate-900 text-white py-5 rounded-2xl font-black text-sm shadow-xl">
+                FINISH & CLEAR
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "DAP Fertilizer", cat: "Fertilizer", retail: 6500, wholesale: 6200 },
+            { id: 2, name: "Acetakill", cat: "Insecticide", retail: 850, wholesale: 780 },
+            { id: 3, name: "Kung Fu", cat: "Insecticide", retail: 1200, wholesale: 1100 },
+            { id: 4, name: "Cropsil Vittasect", cat: "Booster", retail: 1500, wholesale: 1350 },
+            { id: 5, name: "Masterline", cat: "Specialty", retail: 2200, wholesale: 2000 },
+            { id: 6, name: "Jibucleaner", cat: "Cleaner/Herbicide", retail: 950, wholesale: 850 }
+        ];
+
+        let currentMode = 'retail';
+        let cart = [];
+
+        function renderCatalog() {
+            const container = document.getElementById('catalog');
+            container.innerHTML = products.map(p => `
+                <div class="bg-white p-5 rounded-[1.8rem] shadow-sm border border-gray-50 flex justify-between items-center group">
+                    <div>
+                        <span class="text-[9px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md uppercase mb-1 inline-block">${p.cat}</span>
+                        <h3 class="font-bold text-slate-800">${p.name}</h3>
+                        <p class="font-black text-lg text-slate-900 mt-1">KES ${p[currentMode].toLocaleString()}</p>
+                    </div>
+                    <button onclick="addToCart(${p.id})" class="bg-slate-100 group-active:bg-green-600 text-slate-900 group-active:text-white p-4 rounded-2xl transition-all font-black text-xl">
+                        +
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function setPricing(mode) {
+            currentMode = mode;
+            document.getElementById('retailBtn').className = mode === 'retail' ? 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-white text-green-900 shadow-sm' : 'flex-1 py-2 rounded-xl text-xs font-black transition-all text-green-400';
+            document.getElementById('wholesaleBtn').className = mode === 'wholesale' ? 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-white text-green-900 shadow-sm' : 'flex-1 py-2 rounded-xl text-xs font-black transition-all text-green-400';
+            renderCatalog();
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push({ name: product.name, price: product[currentMode] });
+            updateUI();
+        }
+
+        function updateUI() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('totalItems').innerText = `${cart.length} Items Selected`;
+            document.getElementById('totalPrice').innerText = `KES ${total.toLocaleString()}`;
+        }
+
+        function showReceipt() {
+            if (cart.length === 0) return;
+            const list = document.getElementById('receiptItems');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            list.innerHTML = cart.map(i => `<div class="flex justify-between text-sm font-medium"><span>${i.name}</span><span>KES ${i.price.toLocaleString()}</span></div>`).join('');
+            document.getElementById('modalTotal').innerText = `KES ${total.toLocaleString()}`;
+            document.getElementById('receiptModal').style.display = 'flex';
+        }
+
+        function closeReceipt() {
+            cart = [];
+            updateUI();
+            document.getElementById('receiptModal').style.display = 'none';
+        }
+
+        renderCatalog();
+    </script>
+</body>
+</html>
