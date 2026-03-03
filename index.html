@@ -1,124 +1,170 @@
-<!DOCTYPE html
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CropCare Enterprise</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/VpXpX0C/crop-care-logo-clean.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         .tab-btn.active { border-bottom: 3px solid #166534; color: #166534; font-weight: 800; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+        .pay-opt { border: 2px solid #e2e8f0; border-radius: 1rem; padding: 10px; cursor: pointer; transition: 0.2s; text-align: center; font-size: 10px; font-weight: 800; }
+        .pay-opt.selected { border-color: #166534; background-color: #f0fdf4; color: #166534; }
+        .sub-opt { border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 8px; font-size: 9px; cursor: pointer; text-align: center; transition: 0.2s; flex: 1; }
+        .sub-opt.active { background: #1e293b; color: white; border-color: #1e293b; font-weight: bold; }
     </style>
 </head>
 <body class="pb-36">
     <div class="max-w-md mx-auto">
         <header class="bg-green-900 text-white p-6 rounded-b-[2.5rem] shadow-xl mb-4 flex items-center gap-4">
-            <div class="bg-white p-1 rounded-full w-16 h-16 flex items-center justify-center overflow-hidden">
-                <span class="text-green-900 font-black text-[10px] text-center leading-none italic">CROP<br>CARE</span>
+            <div class="bg-white p-1 rounded-full w-14 h-14 flex items-center justify-center overflow-hidden border-2 border-green-700">
+                <span class="text-green-900 font-black text-[10px] text-center leading-none italic uppercase">CC</span>
             </div>
             <div>
-                <h1 class="text-xl font-black tracking-tight uppercase leading-none">CropCare<br>Enterprise</h1>
-                <p class="text-green-300 text-[10px] font-bold tracking-widest uppercase mt-1">Quality Agro-Chemicals</p>
+                <h1 class="text-xl font-black tracking-tight uppercase leading-none">CropCare</h1>
+                <p class="text-green-300 text-[9px] font-bold tracking-widest uppercase mt-1">Enterprise Global</p>
             </div>
         </header>
 
-        <div class="flex px-6 mb-6 gap-6 text-gray-400 font-bold text-sm">
-            <button onclick="openTab('catalog')" id="btn-catalog" class="tab-btn pb-2 active tracking-tighter">CATALOG</button>
-            <button onclick="openTab('contact')" id="btn-contact" class="tab-btn pb-2 tracking-tighter uppercase">Contact Info</button>
+        <div class="flex px-6 mb-4 justify-between text-gray-400 font-bold text-[10px]">
+            <button onclick="openTab('catalog')" id="btn-catalog" class="tab-btn pb-2 active flex-1 uppercase tracking-wider">Catalog</button>
+            <button onclick="openTab('ai')" id="btn-ai" class="tab-btn pb-2 flex-1 uppercase tracking-wider">AI Support</button>
+            <button onclick="openTab('contact')" id="btn-contact" class="tab-btn pb-2 flex-1 uppercase tracking-wider">Info</button>
+        </div>
+
+        <div id="search-container" class="px-4 mb-4">
+            <input type="text" id="productSearch" onkeyup="filterProducts()" placeholder="🔍 Find chemicals..." class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-3 text-sm shadow-sm outline-none focus:ring-2 focus:ring-green-600">
         </div>
 
         <div id="catalog" class="tab-content active px-4 space-y-3">
-            <div id="product-list" class="space-y-3">
-                </div>
+            <div id="product-list" class="space-y-3"></div>
         </div>
 
-        <div id="contact" class="tab-content px-4 space-y-6">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                <h2 class="font-black text-green-900 mb-6 uppercase text-center text-sm tracking-widest">Business Information</h2>
-                <div class="space-y-4">
-                    <a href="tel:+254720584127" class="flex items-center gap-4 p-5 bg-green-50 rounded-2xl border border-green-100 active:scale-95 transition-all">
-                        <div class="bg-green-600 p-3 rounded-xl text-white">📞</div>
-                        <div>
-                            <p class="text-[10px] font-bold text-green-800 uppercase">Office Line</p>
-                            <p class="font-bold text-slate-900">+254 720 584 127</p>
-                        </div>
-                    </a>
-                    <a href="https://wa.me/254720584127" class="flex items-center gap-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100 active:scale-95 transition-all">
-                        <div class="bg-emerald-500 p-3 rounded-xl text-white">💬</div>
-                        <div>
-                            <p class="text-[10px] font-bold text-emerald-800 uppercase">WhatsApp Business</p>
-                            <p class="font-bold text-slate-900">Start a Chat</p>
-                        </div>
-                    </a>
+        <div id="ai" class="tab-content px-4">
+            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col h-[400px]">
+                <div id="chat-window" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col text-sm">
+                    <div class="bg-gray-100 p-3 rounded-2xl rounded-bl-none max-w-[80%]">How can I help you today?</div>
                 </div>
+                <div class="p-3 border-t flex gap-2">
+                    <input id="chat-input" type="text" placeholder="Type here..." class="flex-1 bg-gray-50 border-none rounded-xl px-4 text-sm py-3 outline-none">
+                    <button onclick="sendMessage()" class="bg-green-800 text-white px-4 rounded-xl">➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="contact" class="tab-content px-4">
+            <div class="bg-white p-6 rounded-[2rem] border space-y-4">
+                <a href="tel:+254720584127" class="flex items-center gap-4 p-4 bg-green-50 rounded-2xl">
+                    <div class="bg-green-600 p-3 rounded-xl text-white font-bold">📞</div>
+                    <div><p class="text-[9px] font-bold text-green-800 uppercase">Support</p><p class="font-bold">+254 720 584 127</p></div>
+                </a>
             </div>
         </div>
     </div>
 
-    <div id="orderBar" class="fixed bottom-6 left-4 right-4 bg-white p-5 rounded-[2rem] shadow-2xl flex justify-between items-center border border-gray-100">
-        <div>
-            <p id="totalPrice" class="text-2xl font-black text-slate-900">KES 0</p>
-            <p id="itemCount" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">0 items</p>
-        </div>
-        <button onclick="showReceipt()" class="bg-green-800 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-lg active:scale-95 transition-all">
-            CHECKOUT
-        </button>
+    <div id="orderBar" class="fixed bottom-6 left-4 right-4 bg-white p-5 rounded-[2rem] shadow-2xl flex justify-between items-center border z-40">
+        <div><p id="totalPrice" class="text-2xl font-black text-slate-900">KES 0</p><p id="itemCount" class="text-[10px] font-bold text-gray-400 uppercase">0 items</p></div>
+        <button onclick="showReceipt()" class="bg-green-800 text-white px-8 py-4 rounded-2xl font-black text-sm active:scale-95 shadow-lg">CHECKOUT</button>
     </div>
 
     <div id="receiptModal" class="modal">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl">
-            <h2 class="text-center font-black text-2xl text-slate-800 mb-6 uppercase">Sale Summary</h2>
-            <div id="receiptItems" class="space-y-2 mb-6 border-y py-4 max-h-40 overflow-y-auto"></div>
-            <div class="flex justify-between font-black text-xl mb-6">
-                <span>TOTAL</span>
-                <span id="modalTotal">KES 0</span>
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h2 class="text-center font-black text-xl text-slate-800 mb-4 uppercase tracking-widest text-sm">Sale Summary</h2>
+            
+            <input type="text" id="customerName" placeholder="Customer Name" class="w-full bg-gray-50 border rounded-xl px-4 py-2 text-sm outline-none mb-4">
+            <div id="receiptItems" class="space-y-1 mb-4 border-y py-4 text-xs font-medium"></div>
+            
+            <div class="mb-4">
+                <label class="text-[10px] font-bold text-gray-400 uppercase block mb-2 text-center">Payment Method</label>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <div class="pay-opt selected" onclick="selectPay(this, 'M-PESA')">M-PESA</div>
+                    <div class="pay-opt" onclick="selectPay(this, 'CASH')">CASH</div>
+                    <div class="pay-opt" onclick="selectPay(this, 'VOOMA')">VOOMA</div>
+                    <div class="pay-opt" onclick="selectPay(this, 'CARD')">BANK CARD</div>
+                </div>
+
+                <div id="cardInfo" class="bg-slate-50 p-3 rounded-xl border border-slate-200 hidden">
+                    <p class="text-[9px] font-bold text-slate-500 uppercase text-center mb-2">Card Type</p>
+                    <div class="flex gap-2">
+                        <div class="sub-opt active" onclick="setSub(this, 'National')">NATIONAL</div>
+                        <div class="sub-opt" onclick="setSub(this, 'International')">INT'L (USD)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-[10px] font-black text-gray-400 uppercase">Discount (KES)</label>
+                <input type="number" id="discountAmount" onkeyup="updateTotals()" placeholder="0" class="w-full bg-gray-50 border rounded-xl px-4 py-2 text-sm outline-none mt-1">
+            </div>
+
+            <div class="space-y-1 border-t pt-4 mb-6">
+                <div class="flex justify-between font-black text-xl text-green-800">
+                    <span>TOTAL</span><span id="modalTotal">KES 0</span>
+                </div>
+                <div id="usdConversion" class="text-right text-xs font-bold text-gray-400 hidden italic">
+                    Approx: $0.00 USD
+                </div>
             </div>
             
-            <div class="space-y-3">
-                <button onclick="shareToWhatsApp()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2">
-                    <span>💬</span> SEND TO CUSTOMER
-                </button>
-                <button onclick="closeReceipt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-sm">
-                    NEW SALE
-                </button>
-            </div>
+            <button onclick="shareToWhatsApp()" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-sm mb-3">SEND RECEIPT</button>
+            <button onclick="closeReceipt()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-sm uppercase">Clear Sale</button>
         </div>
     </div>
 
     <script>
         const products = [
-            { name: "Acetakill", price: 850 },
-            { name: "Kung Fu", price: 1200 },
-            { name: "DAP Fertilizer", price: 6500 },
-            { name: "Cropsil Vittasect", price: 1500 },
-            { name: "Masterline", price: 2200 },
-            { name: "Jibucleaner", price: 950 }
+            { name: "Acetakill", price: 850, info: "Aphids & whiteflies." },
+            { name: "Kung Fu", price: 1200, info: "Caterpillars & beetles." },
+            { name: "DAP Fertilizer", price: 6500, info: "Root growth." },
+            { name: "Cropsil Vittasect", price: 1500, info: "Booster." },
+            { name: "Masterline", price: 2200, info: "Protection." },
+            { name: "Jibucleaner", price: 950, info: "Cleaner." }
         ];
 
         let cart = [];
+        let selectedPayment = "M-PESA";
+        let subType = "National";
+        const KES_TO_USD = 0.0078; // Current approx rate
 
-        function renderProducts() {
+        function selectPay(el, method) {
+            document.querySelectorAll('.pay-opt').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedPayment = method;
+            document.getElementById('cardInfo').style.display = (method === 'CARD') ? 'block' : 'none';
+            updateTotals();
+        }
+
+        function setSub(el, type) {
+            document.querySelectorAll('.sub-opt').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+            subType = type;
+            updateTotals();
+        }
+
+        function renderProducts(filter = "") {
             const list = document.getElementById('product-list');
-            list.innerHTML = products.map(p => `
+            const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
+            list.innerHTML = filtered.map(p => `
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold text-slate-800">${p.name}</h3>
-                        <p class="text-green-700 font-black">KES ${p.price.toLocaleString()}</p>
-                    </div>
-                    <button onclick="addToCart('${p.name}', ${p.price})" class="bg-slate-100 p-4 rounded-2xl font-black text-xl active:bg-green-600 active:text-white transition-all">+</button>
+                    <div><h3 class="font-bold text-slate-800 text-sm">${p.name}</h3><p class="text-green-700 font-black">KES ${p.price.toLocaleString()}</p></div>
+                    <button onclick="addToCart('${p.name}', ${p.price})" class="bg-slate-100 px-5 py-3 rounded-2xl font-black text-lg">+</button>
                 </div>
             `).join('');
         }
 
+        function filterProducts() { renderProducts(document.getElementById('productSearch').value); }
+
         function addToCart(name, price) {
             cart.push({name, price});
-            updateUI();
-        }
-
-        function updateUI() {
             const total = cart.reduce((sum, i) => sum + i.price, 0);
             document.getElementById('totalPrice').innerText = `KES ${total.toLocaleString()}`;
             document.getElementById('itemCount').innerText = `${cart.length} items`;
@@ -134,24 +180,65 @@
 
         function showReceipt() {
             if (cart.length === 0) return;
-            const itemsList = document.getElementById('receiptItems');
             const total = cart.reduce((sum, i) => sum + i.price, 0);
-            itemsList.innerHTML = cart.map(i => `<div class="flex justify-between text-sm"><span>${i.name}</span><b>KES ${i.price.toLocaleString()}</b></div>`).join('');
-            document.getElementById('modalTotal').innerText = `KES ${total.toLocaleString()}`;
+            document.getElementById('receiptItems').innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.name}</span><b>KES ${i.price.toLocaleString()}</b></div>`).join('');
             document.getElementById('receiptModal').style.display = 'flex';
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const disc = parseInt(document.getElementById('discountAmount').value) || 0;
+            const final = total - disc;
+            document.getElementById('modalTotal').innerText = `KES ${final.toLocaleString()}`;
+            
+            const usdBox = document.getElementById('usdConversion');
+            if (selectedPayment === 'CARD' && subType === 'International') {
+                usdBox.classList.remove('hidden');
+                usdBox.innerText = `Approx: $${(final * KES_TO_USD).toFixed(2)} USD`;
+            } else {
+                usdBox.classList.add('hidden');
+            }
         }
 
         function shareToWhatsApp() {
             const total = cart.reduce((sum, i) => sum + i.price, 0);
+            const disc = parseInt(document.getElementById('discountAmount').value) || 0;
+            const final = total - disc;
+            const name = document.getElementById('customerName').value || "Valued Customer";
             const itemsText = cart.map(i => `${i.name}: KES ${i.price.toLocaleString()}`).join('%0A');
-            const message = `*CROPCARE ENTERPRISE RECEIPT*%0A%0A${itemsText}%0A%0A*TOTAL: KES ${total.toLocaleString()}*%0A%0AThank you for your business!`;
+            let payMsg = (selectedPayment === 'CARD') ? `CARD (${subType})` : selectedPayment;
+            
+            let message = `*CROPCARE ENTERPRISE*%0A%0ACustomer: ${name}%0A--------------------------%0A${itemsText}%0A--------------------------%0ADiscount: KES ${disc}%0A*TOTAL: KES ${final.toLocaleString()}*`;
+            
+            if (selectedPayment === 'CARD' && subType === 'International') {
+                message += `%0A(Approx: $${(final * KES_TO_USD).toFixed(2)} USD)`;
+            }
+            
+            message += `%0A*PAYMENT: ${payMsg}*%0A%0AThank you!`;
             window.open(`https://wa.me/?text=${message}`, '_blank');
         }
 
         function closeReceipt() {
             cart = [];
-            updateUI();
+            document.getElementById('totalPrice').innerText = "KES 0";
+            document.getElementById('itemCount').innerText = "0 items";
             document.getElementById('receiptModal').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const win = document.getElementById('chat-window');
+            if(!input.value) return;
+            win.innerHTML += `<div class="bg-green-700 text-white p-3 rounded-2xl self-end ml-auto max-w-[80%]">${input.value}</div>`;
+            let resp = "Please contact our office for advice.";
+            const q = input.value.toLowerCase();
+            products.forEach(p => { if(q.includes(p.name.toLowerCase())) resp = p.info; });
+            setTimeout(() => {
+                win.innerHTML += `<div class="bg-gray-100 p-3 rounded-2xl max-w-[80%]">${resp}</div>`;
+                win.scrollTop = win.scrollHeight;
+            }, 400);
+            input.value = '';
         }
 
         renderProducts();
