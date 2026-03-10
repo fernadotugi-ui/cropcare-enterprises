@@ -1,106 +1,184 @@
-<!DOCTYPE html
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CropCare  - Multi-Device</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropCare Advisor - Kenya Master List</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); align-items: center; justify-content: center; z-index: 100; padding: 15px; backdrop-blur: 4px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { background-color: #f1f5f9; font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        /* Grid Layout */
-        .product-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(1, minmax(0, 1fr)); }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (min-width: 1280px) { .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-        /* Professional Payment Buttons */
-        .pay-btn { 
-            border: 2px solid #e2e8f0; 
-            border-radius: 16px; 
-            padding: 16px 8px; 
-            cursor: pointer; 
-            text-align: center; 
-            font-size: 12px; 
-            font-weight: 800; 
-            background: white; 
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
+        .info-card {
+            background: white;
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #e2e8f0;
         }
-        .pay-btn:hover { border-color: #94a3b8; background: #f8fafc; transform: translateY(-2px); }
-        .pay-btn.active { border-color: #166534; background: #f0fdf4; color: #166534; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.15); }
-
-        .qty-box { 
-            width: 85px; height: 55px; border: 2px solid #cbd5e1; border-radius: 12px; 
-            text-align: center; font-weight: 900; font-size: 20px; outline: none; transition: 0.2s;
+        .info-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border-color: #059669;
         }
-        .qty-box:focus { border-color: #166534; box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.1); background: white; }
-
-        .checkout-card { background: white; width: 100%; max-width: 500px; border-radius: 32px; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .badge-pest { background: #fee2e2; color: #dc2626; }
+        .badge-soil { background: #dcfce7; color: #166534; }
+        .badge-weed { background: #fef3c7; color: #d97706; }
+        .badge-fungi { background: #e0f2fe; color: #0284c7; }
     </style>
 </head>
-<body class="pb-44">
-    <div class="max-w-7xl mx-auto px-6">
-        <header class="bg-green-900 text-white p-10 rounded-b-[3.5rem] shadow-2xl mb-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div>
-                <h1 class="text-4xl font-black uppercase tracking-tighter italic">CropCare <span class="text-green-400">Pro</span></h1>
-                <p class="text-sm font-bold text-green-300 opacity-70 uppercase tracking-[0.2em] mt-2">Enterprise POS Terminal</p>
-            </div>
-            <div class="relative w-full lg:w-[450px]">
-                <input type="text" id="srch" onkeyup="render()" placeholder="🔍 Type to find a product..." class="w-full p-5 rounded-2xl text-black text-lg outline-none shadow-2xl border-none focus:ring-4 focus:ring-green-500/40 transition-all">
-            </div>
-        </header>
+<body class="pb-40">
 
-        <div id="list" class="product-grid"></div>
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl p-8 shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 flex justify-center z-50">
-        <div class="max-w-7xl w-full flex flex-row justify-between items-center gap-4">
-            <div class="hidden sm:flex flex-col">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Current Order</span>
-                <span id="countDisp" class="text-sm font-bold text-slate-600">0 Bags Selected</span>
-            </div>
-            <div class="flex items-center gap-8">
-                <div class="text-right">
-                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Total Amount</span>
-                    <span id="totalDisp" class="text-4xl font-black text-slate-900 leading-none tracking-tighter">KES 0</span>
+    <header class="bg-gradient-to-br from-emerald-900 via-green-900 to-teal-950 text-white pt-16 pb-28 px-8 rounded-b-[5rem] shadow-2xl relative">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-10">
+            <div class="text-center lg:text-left">
+                <h1 class="text-6xl font-extrabold tracking-tighter mb-4 italic">CropCare <span class="text-emerald-400 not-italic">Advisor</span></h1>
+                <p class="text-emerald-100 text-xl font-medium opacity-90">Kenya's Comprehensive Agrochemical & Treatment Guide</p>
+                <div class="mt-6 flex flex-wrap justify-center lg:justify-start gap-4">
+                    <span class="bg-emerald-800/50 border border-emerald-700 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">✅ 2026 Inventory</span>
+                    <span class="bg-emerald-800/50 border border-emerald-700 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">🇰🇪 KEBS Compliant</span>
                 </div>
-                <button onclick="openM()" class="bg-green-800 hover:bg-green-900 text-white px-14 py-6 rounded-2xl font-black uppercase shadow-2xl active:scale-95 transition-all text-base tracking-wider flex items-center gap-3">
-                    Checkout Now ➔
+            </div>
+            
+            <div class="w-full lg:w-1/3 bg-white/10 backdrop-blur-md p-6 rounded-[2.5rem] border border-white/20">
+                <label class="block text-xs font-black uppercase tracking-widest mb-3 opacity-70">Expert Search</label>
+                <input type="text" id="infoSearch" onkeyup="filterHub()" placeholder="Search Pests, Chemicals or Crops..." 
+                       class="w-full p-5 rounded-2xl text-slate-900 outline-none shadow-xl text-lg font-bold">
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 -mt-16">
+        <div class="flex flex-wrap gap-4 mb-12 justify-center">
+            <button onclick="filterCat('All')" class="bg-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 hover:text-white transition-all">ALL SOLUTIONS</button>
+            <button onclick="filterCat('Insecticide')" class="bg-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-red-500 hover:text-white transition-all border-b-4 border-red-200">PEST CONTROL</button>
+            <button onclick="filterCat('Fertilizer')" class="bg-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-green-600 hover:text-white transition-all border-b-4 border-green-200">FERTILIZERS</button>
+            <button onclick="filterCat('Herbicide')" class="bg-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-amber-500 hover:text-white transition-all border-b-4 border-amber-200">WEED CONTROL</button>
+            <button onclick="filterCat('Fungicide')" class="bg-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-blue-500 hover:text-white transition-all border-b-4 border-blue-200">DISEASES</button>
+        </div>
+
+        <div id="hubGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            </div>
+    </main>
+
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl z-50">
+        <div class="bg-slate-900/95 backdrop-blur-xl text-white p-8 rounded-[3rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] flex flex-col md:flex-row justify-between items-center gap-6 border border-slate-700">
+            <div>
+                <h4 class="text-xs font-black text-emerald-400 uppercase tracking-[0.3em] mb-1">Farmer's Advisory Plan</h4>
+                <p id="planCount" class="text-2xl font-bold">0 Expert Recommendations</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="clearAll()" class="px-6 py-4 rounded-2xl font-bold text-slate-400 hover:text-white transition-colors">Reset</button>
+                <button onclick="sharePlan()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-10 py-5 rounded-2xl font-black transition-all flex items-center gap-3 shadow-xl">
+                    SHARE PLAN VIA WHATSAPP
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="modal" class="modal">
-        <div class="checkout-card overflow-y-auto max-h-[95vh]">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="font-black text-2xl uppercase text-slate-800 tracking-tight">Checkout</h2>
-                <button onclick="closeM()" class="text-gray-400 hover:text-red-500 font-bold text-2xl">&times;</button>
-            </div>
+    <script>
+        const content = [
+            // INSECTICIDES
+            { id: 1, title: "Acetakill 250WDG", category: "Insecticide", targets: "Aphids, Thrips, Whiteflies", dosage: "20g/20L", description: "Systemic control for sucking pests in vegetables.", wait_time: "7 Days", price: 850 },
+            { id: 2, title: "Belt 480SC", category: "Insecticide", targets: "Fall Armyworm, Bollworm", dosage: "5ml/20L", description: "Powerful control for tough caterpillars in Maize.", wait_time: "14 Days", price: 2800 },
+            { id: 3, title: "Thunder 145OD", category: "Insecticide", targets: "Aphids, Beetles, Caterpillars", dosage: "15ml/20L", description: "Two-way action: contact and systemic.", wait_time: "10 Days", price: 1350 },
             
-            <div class="space-y-6">
-                <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase mb-2 block tracking-widest">Customer Name</label>
-                    <input id="cName" type="text" placeholder="Who is buying?" class="w-full bg-gray-50 border border-gray-200 p-4 rounded-xl mb-4 outline-none focus:border-green-600 focus:bg-white transition-all font-bold">
-                </div>
+            // FERTILIZERS
+            { id: 4, title: "DAP Fertilizer", category: "Fertilizer", targets: "Root Growth, Planting", dosage: "50kg/Acre", description: "High phosphorus for strong roots at start.", wait_time: "At Planting", price: 6500 },
+            { id: 5, title: "CAN Fertilizer", category: "Fertilizer", targets: "Leaf Growth, Vegetative", dosage: "50kg/Acre", description: "Nitrogen for greening and fast growth.", wait_time: "Top Dressing", price: 5800 },
+            { id: 6, title: "YaraMila Winner", category: "Fertilizer", targets: "Fruit Quality, Flowering", dosage: "50kg/Acre", description: "Premium NPK with micronutrients for high yield.", wait_time: "Flowering Stage", price: 7200 },
+            
+            // HERBICIDES
+            { id: 7, title: "Roundup Turbo", category: "Herbicide", targets: "All Weeds (Non-selective)", dosage: "200ml/20L", description: "Clear farm before planting. Kills everything green.", wait_time: "7 Days before tillage", price: 1850 },
+            { id: 8, title: "Lumax 537.5SE", category: "Herbicide", targets: "Grasses & Broadleaf in Maize", dosage: "200ml/20L", description: "Apply to soil after planting maize for weed-free farm.", wait_time: "Pre-emergence", price: 3400 },
+            { id: 9, title: "2,4-D Amine", category: "Herbicide", targets: "Broadleaf Weeds in Cereals", dosage: "100ml/20L", description: "Kills broadleaf weeds only (Safe for wheat/maize).", wait_time: "Post-emergence", price: 950 },
 
-                <div id="rItems" class="bg-slate-50 rounded-2xl p-5 mb-4 text-sm font-bold space-y-3 text-slate-700 max-h-40 overflow-y-auto border border-dashed border-slate-200"></div>
-                
-                <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase mb-3 block tracking-widest">Select Payment Method</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <div class="pay-btn active" onclick="setP(this,'M-PESA')"><span>📱</span>M-PESA</div>
-                        <div class="pay-btn" onclick="setP(this,'CASH')"><span>💵</span>CASH</div>
-                        <div class="pay-btn" onclick="setP(this,'VOOMA')"><span>🏦</span>VOOMA</div>
-                        <div class="pay-btn" onclick="setP(this,'CARD')"><span>💳</span>CARD</div>
+            // FUNGICIDES
+            { id: 10, title: "Ridomil Gold", category: "Fungicide", targets: "Late Blight, Downy Mildew", dosage: "50g/20L", description: "The gold standard for tomato and potato blight.", wait_time: "7-14 Days", price: 2400 },
+            { id: 11, title: "Masterline", category: "Fungicide", targets: "Rust, Leaf Spots", dosage: "40ml/20L", description: "Systemic fungicide for coffee and vegetables.", wait_time: "14 Days", price: 2200 },
+            { id: 12, title: "Milraz 76WP", category: "Fungicide", targets: "Blight, Powdery Mildew", dosage: "50g/20L", description: "Contact and local systemic fungicide.", wait_time: "10 Days", price: 1150 }
+        ];
+
+        let selectedItems = {};
+
+        function getBadgeClass(cat) {
+            if(cat === 'Insecticide') return 'badge-pest';
+            if(cat === 'Fertilizer') return 'badge-soil';
+            if(cat === 'Herbicide') return 'badge-weed';
+            if(cat === 'Fungicide') return 'badge-fungi';
+            return 'bg-gray-100 text-gray-600';
+        }
+
+        function renderHub(filter = "All", search = "") {
+            const grid = document.getElementById('hubGrid');
+            let filtered = content.filter(item => {
+                const matchesCat = (filter === "All" || item.category === filter);
+                const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || 
+                                     item.targets.toLowerCase().includes(search.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="info-card flex flex-col h-full overflow-hidden">
+                    <div class="p-8 flex-1">
+                        <div class="mb-4">
+                            <span class="text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${getBadgeClass(item.category)}">
+                                ${item.category}
+                            </span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-800 mb-2 leading-tight">${item.title}</h3>
+                        <p class="text-xs font-black text-emerald-600 mb-4 uppercase tracking-tighter italic">🎯 targets: ${item.targets}</p>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6 font-medium">${item.description}</p>
+                        
+                        <div class="bg-slate-50 p-5 rounded-2xl space-y-3 border border-slate-100">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Mixing Ratio</span>
+                                <span class="text-xs font-extrabold text-slate-700 bg-white px-2 py-1 rounded-md shadow-sm border">${item.dosage}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Safety Period</span>
+                                <span class="text-xs font-extrabold text-slate-700">${item.wait_time}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-slate-50 mt-auto border-t border-slate-100 flex justify-between items-center">
+                        <span class="font-black text-slate-900 text-lg italic">KES ${item.price.toLocaleString()}</span>
+                        <button onclick="togglePlan(${item.id})" class="px-8 py-3 rounded-2xl font-black text-xs transition-all uppercase tracking-widest ${selectedItems[item.id] ? 'bg-red-500 text-white shadow-inner' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-600 hover:text-white'}">
+                            ${selectedItems[item.id] ? 'Cancel' : 'Add to Plan'}
+                        </button>
                     </div>
                 </div>
+            `).join('');
+        }
 
-                <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase mb-2 block tracking-widest">Apply Discount</label>
-                    <input id="disc" type="number" onkeyup="updM()" placeholder="0.00" class="w-full border border-gray-200 p-4 rounded-xl outline-none focus:border-green-600 font-black
+        function togglePlan(id) {
+            if (selectedItems[id]) delete selectedItems[id];
+            else selectedItems[id] = true;
+            const count = Object.keys(selectedItems).length;
+            document.getElementById('planCount').innerText = `${count} Recommendation${count !== 1 ? 's' : ''}`;
+            renderHub();
+        }
+
+        function filterHub() { renderHub("All", document.getElementById('infoSearch').value); }
+        function filterCat(cat) { renderHub(cat); }
+        function clearAll() { selectedItems = {}; document.getElementById('planCount').innerText = "0 Expert Recommendations"; renderHub(); }
+
+        function sharePlan() {
+            let msg = "*CROPCARE ADVISORY - OFFICIAL PLAN*%0A%0A";
+            content.forEach(item => {
+                if (selectedItems[item.id]) {
+                    msg += `🌿 *${item.title.toUpperCase()}*%0A`;
+                    msg += `📌 Category: ${item.category}%0A`;
+                    msg += `🎯 Target: ${item.targets}%0A`;
+                    msg += `🧪 Dose: ${item.dosage} (Mix thoroughly)%0A`;
+                    msg += `⏳ Wait Period: ${item.wait_time}%0A`;
+                    msg += `----------------------------%0A`;
+                }
+            });
+            if (msg.length < 50) return alert("Select products to generate a plan.");
+            window.open(`https://wa.me/?text=${msg}%0A*Disclaimer: Read product label before use.*`, '_blank');
+        }
+
+        window.onload = () => renderHub();
+    </script>
+</body>
+</html>
