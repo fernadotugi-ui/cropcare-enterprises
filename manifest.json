@@ -1,0 +1,15 @@
+{
+  "name": "CropCare AI Assistant",
+  "short_name": "CropCare",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#343541",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
